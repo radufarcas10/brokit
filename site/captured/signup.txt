@@ -1,0 +1,9 @@
+$ brokit run signup.html --steps steps.json
+brokit run http://127.0.0.1:45541/signup.html
+  ready (load + network idle) in 609 ms
+  ✓ click #email
+  ✓ type "ana@example.com"
+  ✓ key Enter
+  ✓ expect greeting.textContent equals "Welcome, ana"
+  ✓ screenshot signed-in → brokit-out/signed-in.png (1280×800)
+ok in 0.8 s

@@ -1,0 +1,7 @@
+$ brokit diff before.png after.png diff.png
+before.png vs after.png
+  760×940, 714400 pixels compared
+  identical 87.298 %   ≤2 4.968 %   ≤8 0.347 %   ≤32 5.431 %   >32 1.956 %
+  mean 4.2574, worst 243
+  difference image → diff.png
+  FAILED: 90745 pixels differ (up to 243)

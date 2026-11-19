@@ -1,0 +1,19 @@
+<section class="section" id="pixels">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Pixel diffs</p>
+      <h2>See exactly what changed.</h2>
+      <p>A new price, and a button three pixels lower and one shade darker, which pushes the card's edge down with it. Easy to miss by eye, impossible to miss here.</p>
+    </div>
+    <!-- assets/*.png: screenshots of demo/card.html and ?v=after, and their diff. -->
+    <div class="shots" data-reveal>
+      <figure><img src="assets/before.png" width="380" height="470" alt="A pricing card: Team, $12 per seat per month, three features and a Start free trial button."><figcaption>Before</figcaption></figure>
+      <figure><img src="assets/after.png" width="380" height="470" alt="The same card with the price $14 and the button slightly lower and darker."><figcaption>After</figcaption></figure>
+      <figure><img src="assets/diff.png" width="380" height="470" alt="The difference: the card faded to gray, with the changed price, the moved button and the card's lower edge in red."><figcaption>Difference</figcaption></figure>
+    </div>
+    <figure class="terminal diff-out" data-reveal>
+      {{output:diff}}
+    </figure>
+    <p class="note" data-reveal>Allow what doesn't matter: <code>--tolerance '{"max": 2}'</code> for antialiasing, <code>'{">8": "0.1%"}'</code> for a few stray pixels, <code>--ignore</code> for a clock.</p>
+  </div>
+</section>

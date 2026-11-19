@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>motion</title>
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font: 16px sans-serif; }
+  button, a { display: inline-block; height: 20px; margin: 0; padding: 0 4px; border: 0; font: 14px/20px sans-serif; vertical-align: top; }
+  #panel { height: 200px; background: rgb(255, 255, 255); transition: background-color 600ms linear; }
+  #panel.on { background: rgb(0, 0, 255); }
+  #slide { width: 100px; height: 100px; background: rgb(255, 0, 0); }
+  #slide.go { animation: slide 500ms linear forwards; }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(300px); } }
+  #spinner { width: 20px; height: 20px; background: black; }
+  #spinner.on { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #far { margin-top: 1200px; height: 100px; background: rgb(0, 128, 0); }
+</style>
+</head>
+<body>
+<button id="toggle" onclick="panel.classList.toggle('on')">toggle</button>
+<a id="jump" href="#far">jump</a>
+<div id="panel"></div>
+<div id="slide"></div>
+<div id="spinner"></div>
+<div id="far"></div>
+<div style="height: 400px"></div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>form</title>
+<style>
+  body { margin: 0; font: 16px/1.4 sans-serif; background: #fff; color: #111; }
+  header { padding: env(safe-area-inset-top) 16px 8px; background: #234; color: #fff; }
+  form { display: flex; gap: 8px; padding: 16px; flex-wrap: wrap; }
+  input, button { font: inherit; padding: 6px 8px; }
+  #list { height: 120px; overflow: auto; margin: 0 16px; border: 1px solid #999; }
+  #list div { height: 30px; }
+  #far { margin-top: 1500px; }
+  @media (max-width: 500px) { form { flex-direction: column; } }
+</style>
+</head>
+<body>
+<header>brokit test form</header>
+<form id="form">
+  <input id="email" autocomplete="off" value="">
+  <input id="password" type="password" autocomplete="off">
+  <button id="go">Sign in</button>
+  <button id="count" type="button">0</button>
+</form>
+<p id="greeting"></p>
+<div id="list"></div>
+<button id="far" type="button">far below</button>
+<script>
+  // Everything the test reads back.
+  window.state = { keys: [], composition: [], contextmenu: 0, pointerTypes: [], farClicks: 0, submits: 0 };
+  const list = document.getElementById('list');
+  for (let i = 0; i < 50; i++) list.append(Object.assign(document.createElement('div'), { textContent: `item ${i}` }));
+  document.getElementById('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    state.submits++;
+    document.getElementById('greeting').textContent = `Signed in as ${document.getElementById('email').value}`;
+  });
+  const count = document.getElementById('count');
+  count.addEventListener('click', () => (count.textContent = String(Number(count.textContent) + 1)));
+  addEventListener('pointerdown', (e) => state.pointerTypes.push(e.pointerType));
+  addEventListener('keydown', (e) => state.keys.push(`${e.ctrlKey ? 'Ctrl+' : ''}${e.shiftKey ? 'Shift+' : ''}${e.key}:${e.code}:${e.keyCode}`));
+  addEventListener('contextmenu', (e) => (e.preventDefault(), state.contextmenu++));
+  for (const type of ['compositionstart', 'compositionupdate', 'compositionend']) {
+    document.getElementById('email').addEventListener(type, (e) => state.composition.push(`${type.slice(11)}:${e.data}`));
+  }
+  document.getElementById('far').addEventListener('click', () => state.farClicks++);
+  console.log('form ready');
+</script>
+</body>
+</html>

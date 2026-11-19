@@ -1,0 +1,4 @@
+{
+  "note": "The site's settings. repo: the repository's web address (https://github.com/... or https://gitlab.com/...), once it's hosted; the docs pages then link the source files they mention. Empty: those show as plain text.",
+  "repo": ""
+}

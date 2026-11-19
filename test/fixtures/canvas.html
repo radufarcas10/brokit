@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>canvas</title>
+<style>
+  body { margin: 0; background: #ddd; }
+  canvas { display: block; margin: 20px; width: 400px; height: 300px; touch-action: none; }
+</style>
+</head>
+<body>
+<canvas width="400" height="300"></canvas>
+<script>
+  // A small drawing app on a 2D canvas: no DOM to look into, only pixels and the state
+  // it exposes. A press and a drag draw a line; keys pick the color; the wheel zooms.
+  const canvas = document.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  const colors = { r: '#e00000', g: '#00c000', b: '#0000e0' };
+  window.app = { strokes: [], color: '#e00000', zoom: 1, frames: 0, ready: false };
+  let stroke = null;
+  let dirty = true;
+  const at = (e) => [e.offsetX, e.offsetY];
+  canvas.addEventListener('pointerdown', (e) => {
+    canvas.setPointerCapture(e.pointerId);
+    stroke = { color: app.color, points: [at(e)], type: e.pointerType };
+    app.strokes.push(stroke);
+    dirty = true;
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!stroke) return;
+    stroke.points.push(at(e));
+    dirty = true;
+  });
+  canvas.addEventListener('pointerup', () => (stroke = null));
+  addEventListener('keydown', (e) => {
+    if (colors[e.key]) app.color = colors[e.key];
+    if (e.key === 'Backspace') (app.strokes.pop(), (dirty = true));
+  });
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    app.zoom = Math.max(0.25, Math.min(4, app.zoom * (e.deltaY < 0 ? 1.25 : 0.8)));
+    dirty = true;
+  }, { passive: false });
+  function frame() {
+    if (dirty) {
+      dirty = false;
+      app.frames++;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(app.zoom, 0, 0, app.zoom, 0, 0);
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      for (const s of app.strokes) {
+        ctx.strokeStyle = s.color;
+        ctx.beginPath();
+        ctx.moveTo(...s.points[0]);
+        for (const p of s.points) ctx.lineTo(...p);
+        if (s.points.length === 1) ctx.lineTo(s.points[0][0] + 0.01, s.points[0][1]);
+        ctx.stroke();
+      }
+    }
+    app.ready = true;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  // A pixel of what's drawn, in canvas pixels.
+  app.pixel = (x, y) => [...ctx.getImageData(x, y, 1, 1).data];
+</script>
+</body>
+</html>

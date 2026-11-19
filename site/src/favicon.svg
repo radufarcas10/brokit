@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- brokit's icon, in the logo's two colors: burgundy on light, white on dark (as the browser's theme is). -->
+  <style>
+    .w { fill: #2b1414; } .d { fill: #ffffff; opacity: 0.4; } .c { stroke: #ffffff; }
+    @media (prefers-color-scheme: dark) { .w { fill: #ffffff; } .d { fill: #2b1414; } .c { stroke: #2b1414; } }
+  </style>
+  <rect class="w" x="4" y="8" width="56" height="48" rx="11"/>
+  <circle class="d" cx="15" cy="19" r="3"/>
+  <circle class="d" cx="24" cy="19" r="3"/>
+  <path class="c" d="M20 37.5l8 8 16-17" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

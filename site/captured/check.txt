@@ -1,0 +1,9 @@
+$ brokit check
+brokit check: 3 scenarios, Chrome 155.0.8059.39, software drawing
+✗ checks/card  1 step, 1.1 s
+    ✗ screenshot card → brokit-out/checks/card/card.png (760×940)  391 ms
+        differs from checks/baselines/card/card.png: 55252 pixels differ by more than 2 (up to 243)
+        difference → brokit-out/checks/card/card.diff.png
+✓ checks/signup-phone  5 steps, 0.4 s
+✓ checks/signup  5 steps, 0.3 s
+3 scenarios: 2 passed, 1 FAILED in 1.7 s

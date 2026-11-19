@@ -1,0 +1,19 @@
+<section class="section" id="ci">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">CI &amp; agents</p>
+      <h2>Made for pipelines and for&nbsp;agents.</h2>
+      <p>Every run ends in an exit code your CI understands and, with <code>--json</code>, a result a script or an AI agent can read: each step, its value, the console, every error.</p>
+    </div>
+    <ul class="ticks ticks-row" data-reveal>
+      <li><strong>Plain answers:</strong> 0 when everything worked, 1 when the page failed, 2 when brokit was run wrong.</li>
+      <li><strong>Same pixels everywhere:</strong> <code>--gpu software</code> draws identically on a laptop and a CI runner.</li>
+      <li><strong>Safe to hand to an agent:</strong> local pages only, a sandboxed throwaway browser, files written only where you say.</li>
+    </ul>
+    <!-- Part of the hero's run as --json (captured/signup-result.json). -->
+    <figure class="terminal" data-reveal>
+      {{bar:brokit run signup.html --steps steps.json --json}}
+      {{json:captured/signup-result.json}}
+    </figure>
+  </div>
+</section>

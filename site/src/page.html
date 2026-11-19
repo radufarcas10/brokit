@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>brokit · check web pages in a real Chrome</title>
+<meta name="description" content="brokit is a free, open-source command-line tool and Node.js library that checks web pages in a real, headless Chrome: real clicks, typing and touch, expectations, screenshot baselines and pixel diffs. For web developers, CI and AI coding agents. Needs Node.js and Chrome; no npm dependencies.">
+<meta name="application-name" content="brokit">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fafaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="brokit">
+<meta property="og:title" content="brokit: check web pages in a real Chrome">
+<meta property="og:description" content="A free, open-source CLI and Node.js library: it opens your pages in headless Chrome, uses them like a person, checks them and compares screenshots. For developers, CI and AI agents.">
+<meta property="og:image" content="assets/og.png">
+<meta property="og:image:alt" content="brokit: check any web page in a real Chrome, with a terminal showing a check passing.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="brokit: check web pages in a real Chrome">
+<meta name="twitter:description" content="A free, open-source CLI and Node.js library for checking web pages in a real Chrome. For developers, CI and AI agents.">
+<!-- What brokit is, for search engines (a data block: browsers don't run it). -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "brokit",
+  "description": "A command-line tool and Node.js library that checks web pages in a real, headless Chrome: real clicks, typing and touch, expectations, screenshot baselines and pixel diffs.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Linux, macOS, Windows",
+  "softwareRequirements": "Node.js 22.4 or newer; Chrome, Chromium or Edge",
+  "softwareVersion": "{{value:version}}",
+  "license": ["https://opensource.org/licenses/MIT", "https://www.apache.org/licenses/LICENSE-2.0"],
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Person", "name": "Radu Farcas", "url": "https://radufarcas.dev" }
+}
+</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+<script src="main.js" defer></script>
+</head>
+<body>
+{{include:sections/header.html}}
+
+<main id="main">
+{{include:sections/hero.html}}
+{{include:sections/overview.html}}
+{{include:sections/why.html}}
+{{include:sections/steps.html}}
+{{include:sections/pages.html}}
+{{include:sections/pixels.html}}
+{{include:sections/checks.html}}
+{{include:sections/ci.html}}
+{{include:sections/install.html}}
+</main>
+
+{{include:sections/footer.html}}
+</body>
+</html>

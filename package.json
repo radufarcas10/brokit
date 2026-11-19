@@ -1,0 +1,52 @@
+{
+  "name": "brokit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Check web pages in a real Chrome: real clicks, typing and touch, expectations, screenshot baselines and pixel diffs. A CLI and Node.js library for developers, CI and AI agents, with no npm dependencies.",
+  "license": "MIT OR Apache-2.0",
+  "author": "Radu Farcas",
+  "type": "module",
+  "bin": {
+    "brokit": "bin/brokit.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "LICENSE-MIT",
+    "LICENSE-APACHE",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.4"
+  },
+  "scripts": {
+    "test": "node --test",
+    "site": "node site/build.mjs",
+    "site:capture": "node site/build.mjs --capture",
+    "site:check": "node bin/brokit.mjs check site/checks --serve site/dist"
+  },
+  "keywords": [
+    "browser",
+    "testing",
+    "headless-chrome",
+    "chrome",
+    "screenshot",
+    "visual-regression",
+    "visual-testing",
+    "pixel-diff",
+    "e2e",
+    "end-to-end",
+    "cdp",
+    "devtools-protocol",
+    "canvas",
+    "webgl",
+    "ci",
+    "ai-agents",
+    "cli",
+    "zero-dependency"
+  ]
+}

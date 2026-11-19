@@ -1,0 +1,11 @@
+{
+  "url": "http://127.0.0.1:44993/signup.html",
+  "ok": true,
+  "ready": { "by": "load + network idle", "ms": 618 },
+  "steps": [
+    { "label": "click #email", "ok": true, "ms": 33 },
+    { "label": "expect greeting.textContent equals \"Welcome, ana\"", "ok": true, "value": "Welcome, ana", "ms": 1 }
+  ],
+  "console": [],
+  "errors": []
+}

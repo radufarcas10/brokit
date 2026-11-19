@@ -1,0 +1,32 @@
+<section class="section" id="install">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Install</p>
+      <h2>Start in a minute.</h2>
+      <p>brokit comes from npm. It needs Node.js 22.4 or newer, and Chrome, Chromium or Edge, which it finds on its own (or <code>brokit install-chrome</code> downloads one).</p>
+    </div>
+    <ol class="install" data-reveal>
+      <li>
+        <h3>Add it to your project</h3>
+        {{copy:npm install --save-dev brokit}}
+      </li>
+      <li>
+        <h3>Check your setup</h3>
+        {{copy:npx brokit doctor}}
+      </li>
+      <li>
+        <h3>Open a page</h3>
+        {{copy:npx brokit run index.html --out shot.png}}
+      </li>
+      <li>
+        <h3>Give it steps</h3>
+        {{copy:npx brokit run index.html --steps steps.json}}
+      </li>
+      <li>
+        <h3>Check everything</h3>
+        {{copy:npx brokit check}}
+      </li>
+    </ol>
+    <p class="more" data-reveal><a class="button ghost" href="docs.html">Read the docs <span aria-hidden="true">→</span></a> <span>every step, expectations, baselines, CI and containers</span></p>
+  </div>
+</section>

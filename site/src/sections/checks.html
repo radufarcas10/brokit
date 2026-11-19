@@ -1,0 +1,19 @@
+<section class="section" id="checks">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Checks</p>
+      <h2>Run them all. Remember how it&nbsp;looked.</h2>
+      <p><code>brokit check</code> runs every <code>*.check.json</code> in your project in one Chrome. Screenshots marked as baselines are compared with the approved ones, kept next to your checks and reviewed in git like code.</p>
+    </div>
+    <ul class="ticks ticks-row" data-reveal>
+      <li><strong>One browser for the suite:</strong> ten checks took 3.1&nbsp;s of CPU, against 8.2&nbsp;s with a browser for each.</li>
+      <li><strong>Mistakes fail fast:</strong> every check is read before Chrome starts, so a typo costs milliseconds.</li>
+      <li><strong>Changes on purpose:</strong> <code>--update</code> approves them. In CI, a missing baseline fails instead of quietly passing.</li>
+    </ul>
+    <!-- A real brokit check on a copy of the demos, after the card changed (captured/check.txt). -->
+    <figure class="terminal" data-reveal>
+      {{bar:~/my-app}}
+      {{output:check}}
+    </figure>
+  </div>
+</section>

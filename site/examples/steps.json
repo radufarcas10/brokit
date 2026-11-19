@@ -1,0 +1,7 @@
+[
+  { "click": { "selector": "#email" } },
+  { "type": "ana@example.com" },
+  { "key": "Enter" },
+  { "expect": "greeting.textContent", "equals": "Welcome, ana" },
+  { "screenshot": "signed-in" }
+]

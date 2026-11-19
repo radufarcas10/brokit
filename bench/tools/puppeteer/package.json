@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "description": "Puppeteer for brokit's benchmark only (no browser download: puppeteer-core).",
+  "type": "module",
+  "dependencies": {
+    "puppeteer-core": "25.16.0"
+  }
+}

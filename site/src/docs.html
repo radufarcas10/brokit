@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>{{slot:title}} · brokit</title>
+<meta name="description" content="{{slot:description}}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fafaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="brokit">
+<meta property="og:title" content="{{slot:title}} · brokit">
+<meta property="og:description" content="{{slot:description}}">
+<meta property="og:image" content="assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+<script src="main.js" defer></script>
+</head>
+<body class="docs-page">
+<!-- Made by site/build.mjs from {{slot:source}}: edit that file, not this page. -->
+{{include:sections/header.html}}
+
+<div class="wrap docs">
+  <aside class="docs-side">
+    <nav class="docs-pages" aria-label="Documentation">
+      {{slot:pages}}
+    </nav>
+    <details class="toc" open>
+      <summary>On this page</summary>
+      {{slot:toc}}
+    </details>
+  </aside>
+  <main id="main" class="prose">
+{{slot:content}}
+  </main>
+</div>
+
+{{include:sections/footer.html}}
+</body>
+</html>

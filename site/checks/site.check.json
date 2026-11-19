@@ -1,0 +1,83 @@
+{
+  "note": "The built landing page (site/dist), on a laptop and a phone, light and dark. Run with: npm run site:check. Baselines are kept small (they're in git): the laptop's whole page at half size, the phone's at 1x, dark on the phone only for its first screen (the layout is the same as light).",
+  "url": "/index.html",
+  "ready": "document.readyState === 'complete'",
+  "viewport": {
+    "size": "1280x800",
+    "reducedMotion": "reduce"
+  },
+  "steps": [
+    {
+      "expect": "document.documentElement.scrollWidth <= document.documentElement.clientWidth",
+      "note": "nothing wider than the screen"
+    },
+    {
+      "expect": "[...document.images].every((img) => img.complete && img.naturalWidth > 0)",
+      "note": "every image loaded"
+    },
+    {
+      "expect": "(async () => {\n  const bad = [];\n  for (const a of document.querySelectorAll('a[href]')) {\n    const href = a.getAttribute('href');\n    const u = new URL(href, location.href);\n    if (u.origin !== location.origin) continue;\n    const id = decodeURIComponent(u.hash.slice(1));\n    if (u.pathname === location.pathname) {\n      if (id && !document.getElementById(id)) bad.push(href);\n      continue;\n    }\n    const res = await fetch(u.pathname);\n    if (!res.ok) bad.push(href + ' (HTTP ' + res.status + ')');\n    else if (id && !(await res.text()).includes('id=\"' + id + '\"')) bad.push(href + ' (no #' + id + ')');\n  }\n  return bad;\n})()",
+      "equals": [],
+      "timeout": 0,
+      "note": "every link to this site answers, every #anchor exists"
+    },
+    {
+      "expect": "[...document.querySelectorAll('.terminal pre')].filter((p) => p.scrollWidth > p.clientWidth).map((p) => p.textContent.slice(0, 30))",
+      "equals": [],
+      "note": "on a laptop, no terminal needs scrolling sideways"
+    },
+    {
+      "screenshot": "desktop-light",
+      "fullPage": true,
+      "scale": 0.5,
+      "baseline": true
+    },
+    {
+      "emulate": {
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "screenshot": "desktop-dark",
+      "fullPage": true,
+      "scale": 0.5,
+      "baseline": true
+    },
+    {
+      "emulate": {
+        "size": "390x844",
+        "dpr": 1,
+        "mobile": true,
+        "colorScheme": "light"
+      }
+    },
+    {
+      "expect": "document.documentElement.scrollWidth <= document.documentElement.clientWidth",
+      "note": "nothing wider than the phone"
+    },
+    {
+      "screenshot": "phone-light",
+      "fullPage": true,
+      "baseline": true
+    },
+    {
+      "emulate": {
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "screenshot": "phone-dark-top",
+      "baseline": true
+    },
+    {
+      "click": {
+        "selector": ".copy-button"
+      },
+      "note": "a copy button answers (headless Chrome may have no clipboard, so it may say so)"
+    },
+    {
+      "expect": "document.querySelector('.copy-button').textContent",
+      "matches": "^(Copied|Select it)$"
+    }
+  ]
+}

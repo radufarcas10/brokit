@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "description": "Playwright for brokit's benchmark only (no browser download: playwright-core).",
+  "type": "module",
+  "dependencies": {
+    "playwright-core": "1.64.1"
+  }
+}
