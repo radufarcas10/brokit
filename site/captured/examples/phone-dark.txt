@@ -1,0 +1,15 @@
+$ brokit check --verbose
+brokit check: 1 scenario, Chrome 158.0.8127.36, software drawing
+✓ checks/trips  11 steps, 0.9 s, 2 baselines written
+    ✓ expect getComputedStyle(document.querySelector('.trips')).gridTempl… equals 2
+    ✓ emulate {"size":"393x852","dpr":2,"mobile":true,"reducedMotion":"reduce"}  112 ms
+    ✓ expect getComputedStyle(document.querySelector('.trips')).gridTempl… equals 1
+    ✓ safeArea [59,0,34,0]
+    ✓ expect document.querySelector('header h1').getBoundingClientRect().… ≥ 59
+    ✓ expect innerHeight - document.querySelector('nav a').getBoundingCli… ≥ 34
+    ✓ expect getComputedStyle(document.querySelector('.live')).animationN… equals "none"
+    ✓ screenshot light → brokit-out/checks/trips/light.png (786×1704) [baseline: new]  286 ms
+    ✓ emulate {"colorScheme":"dark"}
+    ✓ expect getComputedStyle(document.body).backgroundColor equals "rgb(16, 18, 23)"
+    ✓ screenshot dark → brokit-out/checks/trips/dark.png (786×1704) [baseline: new]  183 ms
+1 scenario passed in 0.9 s

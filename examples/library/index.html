@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field notes</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #17191f;
+    background: #f6f5f1;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-weight: 750; letter-spacing: -0.01em; }
+  .logo span { color: #0e8f6c; }
+  nav { display: flex; gap: 20px; font-size: 15px; color: #555b66; }
+  .hero { padding: 56px 0 40px; }
+  h1 { max-width: 14em; margin: 0; font-size: clamp(32px, 6vw, 52px); line-height: 1.08; letter-spacing: -0.025em; }
+  .hero p { max-width: 34em; margin: 16px 0 24px; font-size: 18px; color: #555b66; }
+  .button { display: inline-block; padding: 12px 18px; border-radius: 10px; font-weight: 600; color: #fff; background: #0e8f6c; text-decoration: none; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; padding-bottom: 48px; }
+  .card { padding: 20px; background: #fff; border-radius: 14px; border: 1px solid #e6e4dc; }
+  .card b { display: block; margin-bottom: 4px; font-size: 17px; }
+  .card p { margin: 0; color: #6b7180; font-size: 15px; }
+  .dot { width: 36px; height: 36px; margin-bottom: 14px; border-radius: 10px; background: var(--c); }
+  @media (max-width: 600px) {
+    nav { display: none; }
+    .hero { padding-top: 32px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">field<span>notes</span></div>
+    <nav><a>Notes</a><a>Maps</a><a>Pricing</a><a>Sign in</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <h1>Notes that know where you wrote them.</h1>
+    <p>Write on your phone in the field, find it on your laptop at home. Every note keeps its place, its time and its weather.</p>
+    <a class="button">Start writing</a>
+  </section>
+  <section class="cards">
+    <div class="card"><div class="dot" style="--c: #f59e0b"></div><b>Offline first</b><p>Write with no signal. Notes sync when you're back.</p></div>
+    <div class="card"><div class="dot" style="--c: #3b5bdb"></div><b>On a map</b><p>See every note where you wrote it.</p></div>
+    <div class="card"><div class="dot" style="--c: #0e8f6c"></div><b>Yours</b><p>Export everything as plain text, any time.</p></div>
+  </section>
+</main>
+</body>
+</html>

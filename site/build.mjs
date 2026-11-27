@@ -7,6 +7,8 @@
 //   node site/build.mjs --capture    first run brokit for real and keep what it printed
 //                                    and drew: captured/*.txt and *.json, assets/*.png
 //                                    (needs Chrome); then build
+//   node site/build.mjs --capture-examples   only the examples (examples/, see
+//                                    lib/examples.mjs): their output and pictures; then build
 //   node site/build.mjs --out public build into another folder (GitLab Pages serves public/)
 //
 // Everything brokit says on the page is captured from real runs, on the demo pages in
@@ -15,11 +17,12 @@
 // site's own checks (site/checks/) compare with their baselines.
 
 import { execFile } from 'node:child_process';
-import { copyFileSync, cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, posix, resolve } from 'node:path';
+import { dirname, join, posix, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { launch, serve } from '../src/index.mjs';
+import { EXAMPLES } from './lib/examples.mjs';
 import { markdown } from './lib/markdown.mjs';
 import { escape, render } from './lib/template.mjs';
 
@@ -31,13 +34,37 @@ const OUT = resolve(outArg >= 0 ? args[outArg + 1] ?? '' : join(SITE, 'dist'));
 const ASSETS = ['before.png', 'after.png', 'diff.png', 'og.png'];
 
 // The docs pages: made from the repository's own Markdown, so there's one text to keep.
+// The README introduces brokit, site/docs/ has the guides and references, examples/ the
+// examples; each group is a heading in the docs' side bar.
 const ROOT = join(SITE, '..');
-const DOCS = [
-  { source: 'README.md', page: 'docs.html', name: 'Docs', title: 'Documentation', description: 'How to use brokit: steps, scenarios, expectations, baselines, CI, containers and the library.' },
-  { source: 'SECURITY.md', page: 'security.html', name: 'Security', title: 'Security', description: 'What brokit promises about the browser, pages, files and downloads, and how to report a vulnerability.' },
-  { source: 'CHANGELOG.md', page: 'changelog.html', name: 'Changelog', title: 'Changelog', description: 'What changed in each version of brokit.' },
-  { source: 'bench/README.md', page: 'benchmark.html', name: 'Benchmark', title: 'Benchmark', description: 'brokit next to Playwright and Puppeteer: the same work in the same Chrome, measured the same way.' },
+const GUIDE = (file, name, title, description) => ({ source: `site/docs/${file}.md`, page: `${file}.html`, name, title, description });
+const GROUPS = [
+  ['Start', [
+    { source: 'README.md', page: 'docs.html', name: 'Introduction', title: 'Documentation', description: 'What brokit is, who it is for, how to install it, and where to read on.' },
+    GUIDE('getting-started', 'Getting started', 'Getting started', 'From installing brokit to a first check with a baseline screenshot, in ten minutes.'),
+  ]],
+  ['Guides', [
+    GUIDE('steps', 'Steps and expectations', 'Steps and expectations', 'Every step brokit can take on a page (clicks, typing, touch, input methods, screens) and every way to check what it shows.'),
+    GUIDE('scenarios', 'Scenarios', 'Scenarios', 'Scenario files: the page, its screen and its steps together; when a page is ready; JS scenarios for checks that need logic.'),
+    GUIDE('checks', 'Checks and baselines', 'Checks and baselines', 'brokit check, baseline screenshots, motion, tolerances, ignored regions and comparing images.'),
+    GUIDE('chrome', 'Chrome and safety', 'Chrome and safety', 'Which Chrome brokit uses, brokit doctor, installing and pinning Chrome, serving files, and what brokit allows.'),
+    GUIDE('ci', 'CI and containers', 'CI and containers', 'brokit in GitHub Actions, GitLab CI and Docker, and for AI agents.'),
+  ]],
+  ['Reference', [
+    GUIDE('cli', 'Command line', 'Command line', 'Every brokit command, option, exit code and environment variable, and the JSON it prints.'),
+    GUIDE('library', 'Node.js library', 'Node.js library', 'brokit as a library: launch, Browser, Page, scenarios, images, serving and Chrome.'),
+  ]],
+  ['Examples', [
+    { source: 'examples/README.md', page: 'examples.html', name: 'All examples', title: 'Examples', description: 'Small apps with their brokit checks, each run for real to make these pages.' },
+    ...EXAMPLES.map((e) => ({ source: `examples/${e.dir}/README.md`, page: `example-${e.dir}.html`, name: e.name, title: `Example: ${e.name}`, description: e.description, example: e })),
+  ]],
+  ['Project', [
+    { source: 'SECURITY.md', page: 'security.html', name: 'Security', title: 'Security', description: 'What brokit promises about the browser, pages, files and downloads, and how to report a vulnerability.' },
+    { source: 'CHANGELOG.md', page: 'changelog.html', name: 'Changelog', title: 'Changelog', description: 'What changed in each version of brokit.' },
+    { source: 'bench/README.md', page: 'benchmark.html', name: 'Benchmark', title: 'Benchmark', description: 'brokit next to Playwright and Puppeteer: the same work in the same Chrome, measured the same way.' },
+  ]],
 ];
+const DOCS = GROUPS.flatMap(([group, docs]) => docs.map((d) => ({ ...d, group })));
 // Other files the docs link to, published next to the pages.
 const PUBLISHED = { 'LICENSE-MIT': 'LICENSE-MIT.txt', 'LICENSE-APACHE': 'LICENSE-APACHE.txt' };
 
@@ -46,47 +73,109 @@ const PUBLISHED = { 'LICENSE-MIT': 'LICENSE-MIT.txt', 'LICENSE-APACHE': 'LICENSE
  * the repository (when site.json names it), or nowhere (null: its text stays, unlinked).
  * `extra` collects files to publish.
  */
-function siteLink(source, href, { repo, extra }) {
+function siteLink(source, href, { repo, branch, extra }) {
   if (/^(https?:|#|mailto:)/.test(href)) return href;
   const [path, hash = ''] = href.split('#');
-  const target = posix.normalize(posix.join(posix.dirname(source), path));
-  const doc = DOCS.find((d) => d.source === target);
+  const target = posix.normalize(posix.join(posix.dirname(source), path)).replace(/\/$/, '');
+  // A page, or a folder whose README is a page (examples/form/ is that example's page).
+  const doc = DOCS.find((d) => d.source === target || d.source === `${target}/README.md`);
   if (doc) return doc.page + (hash ? `#${hash}` : '');
   if (PUBLISHED[target]) return PUBLISHED[target];
   if (/^bench\/results\/[\w.-]+\.json$/.test(target)) {
     extra.set(target, `bench-results/${posix.basename(target)}`);
     return `bench-results/${posix.basename(target)}`;
   }
-  if (repo) return `${repo.replace(/\/$/, '')}/${target.endsWith('/') ? 'tree' : 'blob'}/main/${target}`;
+  // Pictures the site keeps (site/assets/...) are published with it.
+  if (/^site\/assets\/[\w./-]+\.(png|svg|jpg)$/.test(target) && !target.includes('..')) {
+    const to = target.slice('site/'.length);
+    extra.set(target, to);
+    return to;
+  }
+  if (repo) return `${repo.replace(/\/$/, '')}/${statSync(join(ROOT, target), { throwIfNoEntry: false })?.isDirectory() ? 'tree' : 'blob'}/${branch}/${target}`;
   return null;
+}
+
+/**
+ * The site's directives in a Markdown file, each alone on its line as an HTML comment
+ * (GitHub shows nothing for them): `<!-- include: path -->` shows that file (relative to
+ * the Markdown file) as code; `<!-- output -->`, on an example's page, what its command
+ * printed when captured. Other comments are dropped.
+ */
+function expand(md, doc) {
+  return md.replace(/^<!--\s*([\s\S]*?)\s*-->[ \t]*$/gm, (whole, body) => {
+    const include = /^include:\s*(\S+)$/.exec(body);
+    if (include) {
+      const file = posix.normalize(posix.join(posix.dirname(doc.source), include[1]));
+      if (file.startsWith('..')) throw new Error(`${doc.source}: ${whole}: outside the repository`);
+      let text;
+      try {
+        text = readFileSync(join(ROOT, file), 'utf8').replace(/\n+$/, '');
+      } catch {
+        throw new Error(`${doc.source}: ${whole}: no such file ${file}`);
+      }
+      const lang = { json: 'json', mjs: 'js', js: 'js', html: 'html', css: 'css', sh: 'sh', yml: 'yaml', yaml: 'yaml' }[posix.extname(file).slice(1)] ?? '';
+      return `\`\`\`${lang || 'text'} ${include[1]}\n${text}\n\`\`\``;
+    }
+    if (body === 'output') {
+      if (!doc.example) throw new Error(`${doc.source}: ${whole}: only an example's page has output`);
+      let text;
+      try {
+        text = readFileSync(join(SITE, 'captured', 'examples', `${doc.example.dir}.txt`), 'utf8').replace(/\n+$/, '');
+      } catch {
+        throw new Error(`${doc.source}: ${whole}: nothing captured for ${doc.example.dir} yet (run node site/build.mjs --capture)`);
+      }
+      return `\`\`\`\n${text}\n\`\`\``;
+    }
+    if (/^(include|output)\b/.test(body)) throw new Error(`${doc.source}: ${whole}: write <!-- include: path --> or <!-- output -->`);
+    return '';
+  });
 }
 
 function build() {
   const values = JSON.parse(readFileSync(join(SITE, 'captured', 'values.json'), 'utf8'));
-  const { repo } = JSON.parse(readFileSync(join(SITE, 'site.json'), 'utf8'));
+  const { repo, branch = 'main', url = '' } = JSON.parse(readFileSync(join(SITE, 'site.json'), 'utf8'));
+  // Where the site is published, for share cards (which need absolute links) and the
+  // page's canonical address; without it, relative links and none.
+  const base = url ? escape(url.replace(/\/?$/, '/')) : '';
+  const canonical = (page) => (base ? `<meta property="og:url" content="${base}${page}">\n<link rel="canonical" href="${base}${page}">` : '');
   mkdirSync(join(OUT, 'assets'), { recursive: true });
 
-  const landingNav = ['<a href="#overview">Overview</a>', '<a href="#steps">Steps</a>', '<a href="#pixels">Diffs</a>', '<a href="#checks">Checks</a>', '<a href="docs.html">Docs</a>', '<a class="button small" href="#install">Install</a>'].join('\n      ');
-  const html = render('src/page.html', { root: SITE, values, slots: { nav: landingNav } });
+  // The repository, where the site knows it: a link in the bar and the footer.
+  const host = repo ? (/gitlab\.com/.test(repo) ? 'GitLab' : 'GitHub') : null;
+  const source = repo ? `<a href="${escape(repo)}" rel="noopener">${host}</a>` : '';
+  const landingNav = ['<a href="#overview">Overview</a>', '<a href="#steps">Steps</a>', '<a href="#pixels">Diffs</a>', '<a href="#checks">Checks</a>', '<a href="docs.html">Docs</a>', '<a href="examples.html">Examples</a>', source, '<a class="button small" href="#install">Install</a>'].filter(Boolean).join('\n      ');
+  const html = render('src/page.html', { root: SITE, values, slots: { nav: landingNav, source, base, canonical: canonical('') } });
   writeFileSync(join(OUT, 'index.html'), html);
 
   const extra = new Map();
   const sizes = [`index.html ${(html.length / 1024).toFixed(1)} KB`];
-  for (const doc of DOCS) {
+  for (const [k, doc] of DOCS.entries()) {
     // A heading that's a picture (the README's logo, for GitHub and npm) is its alt text
     // here: the page's header shows the logo already, and the converter keeps no HTML.
-    const md = readFileSync(join(ROOT, doc.source), 'utf8').replace(/^<h1>[\s\S]*?\balt="([^"]+)"[\s\S]*?<\/h1>\n/, '# $1\n');
-    const { html: content, toc } = markdown(md, { link: (href) => siteLink(doc.source, href, { repo, extra }) });
-    const current = (d) => (d === doc ? ' aria-current="page"' : '');
-    const nav = [...DOCS.map((d) => `<a href="${d.page}"${current(d)}>${d.name}</a>`), '<a class="button small" href="docs.html#quick-start">Get started</a>'].join('\n      ');
-    const pages = DOCS.map((d) => `<a href="${d.page}"${current(d)}>${d.name}</a>`).join('\n      ');
+    const md = expand(readFileSync(join(ROOT, doc.source), 'utf8').replace(/^<h1>[\s\S]*?\balt="([^"]+)"[\s\S]*?<\/h1>\n/, '# $1\n'), doc);
+    const { html: content, toc } = markdown(md, { link: (href) => siteLink(doc.source, href, { repo, branch, extra }) });
+    const current = (d) => (d?.page === doc.page ? ' aria-current="page"' : '');
+    const inDocs = (d) => d.group !== 'Project' && d.group !== 'Examples';
+    const nav = [
+      `<a href="docs.html"${inDocs(doc) ? ' aria-current="page"' : ''}>Docs</a>`,
+      `<a href="examples.html"${doc.group === 'Examples' ? ' aria-current="page"' : ''}>Examples</a>`,
+      `<a href="changelog.html"${current(DOCS.find((d) => d.page === 'changelog.html'))}>Changelog</a>`,
+      source,
+      '<a class="button small" href="getting-started.html">Get started</a>',
+    ].filter(Boolean).join('\n      ');
+    const pages = GROUPS.map(([group, docs]) => `<p class="docs-group">${escape(group)}</p>\n      ${docs.map((d) => `<a href="${d.page}"${current(d)}>${escape(d.name)}</a>`).join('\n      ')}`).join('\n      ');
     const list = toc.length
       ? `<ol>\n${toc.map((t) => `        <li class="toc-${t.level}"><a href="#${t.id}">${escape(t.text)}</a></li>`).join('\n')}\n      </ol>`
       : '';
+    // Reading on: the page before and after this one, in the side bar's order.
+    const [prev, next] = [DOCS[k - 1], DOCS[k + 1]];
+    const turn = (d, rel, label) => (d ? `<a class="page-turn ${rel}" href="${d.page}" rel="${rel}"><span>${label}</span>${escape(d.name)}</a>` : '<span></span>');
+    const pager = `<nav class="pager" aria-label="Read on">${turn(prev, 'prev', 'Previous')}${turn(next, 'next', 'Next')}</nav>`;
+    const edit = repo ? `<p class="edit-page"><a href="${escape(`${repo.replace(/\/$/, '')}/blob/${branch}/${doc.source}`)}" rel="noopener">Edit this page on ${host}</a></p>` : '';
     const page = render('src/docs.html', {
       root: SITE,
       values,
-      slots: { nav, pages, toc: list, content, title: escape(doc.title), description: escape(doc.description), source: escape(doc.source) },
+      slots: { nav, pages, toc: list, content, pager, edit, source, base, canonical: canonical(doc.page), name: escape(doc.name), title: escape(doc.title), description: escape(doc.description), file: escape(doc.source) },
     });
     writeFileSync(join(OUT, doc.page), page);
     sizes.push(`${doc.page} ${(page.length / 1024).toFixed(1)} KB`);
@@ -202,9 +291,48 @@ async function capture() {
       await b2.close();
       await s2.close();
     }
-    console.log(`captured: ${chrome}; brokit ${version}`);
+    await captureExamples(tmp);
+    console.log(`captured: ${chrome}; brokit ${version}; ${EXAMPLES.length} examples`);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
+  }
+}
+
+/**
+ * Run an example as a reader would, in a fresh copy of its folder: `brokit ...` is this
+ * brokit's CLI, `node ...` runs with `import 'brokit'` finding this checkout (`reuse`:
+ * run again in the copy already there). Resolves to the run's exit code and output, the
+ * copy's folder and the files in it afterwards.
+ */
+export async function runExample(example, into) {
+  const dir = join(into, example.dir);
+  if (!example.reuse) {
+    // Only what's in the repository: no baselines or output from a run here.
+    cpSync(join(ROOT, 'examples', example.dir), dir, { recursive: true, filter: (src) => !/[\\/](baselines|brokit-out|node_modules|out)$/.test(src) });
+    mkdirSync(join(dir, 'node_modules'), { recursive: true });
+    symlinkSync(ROOT, join(dir, 'node_modules', 'brokit'), 'junction');
+  }
+  const [cmd, ...argv] = example.command.split(' ');
+  const run = await new Promise((done) => {
+    const file = cmd === 'brokit' ? [BIN, ...argv] : argv;
+    execFile(process.execPath, file, { cwd: dir, env: { ...process.env, CI: '' }, timeout: 120000 }, (error, stdout, stderr) => done({ code: error ? error.code : 0, stdout, stderr }));
+  });
+  const files = readdirSync(dir, { recursive: true }).map((f) => f.split(sep).join('/')).filter((f) => !f.startsWith('node_modules'));
+  return { ...run, dir, files };
+}
+
+async function captureExamples(tmp) {
+  const into = join(tmp, 'examples');
+  mkdirSync(into);
+  mkdirSync(join(SITE, 'captured', 'examples'), { recursive: true });
+  for (const example of EXAMPLES) {
+    const run = await runExample(example, into);
+    if (run.code !== 0) throw new Error(`the ${example.dir} example failed:\n${run.stdout}${run.stderr}`);
+    writeFileSync(join(SITE, 'captured', 'examples', `${example.dir}.txt`), transcript(example.command, run.stdout));
+    const shots = join(SITE, 'assets', 'examples', example.dir);
+    rmSync(shots, { recursive: true, force: true });
+    mkdirSync(shots, { recursive: true });
+    for (const [from, to] of Object.entries(example.shots ?? {})) copyFileSync(join(run.dir, from), join(shots, to));
   }
 }
 
@@ -218,5 +346,18 @@ function jsonForPage(value) {
   return `{\n${lines.join(',\n')}\n}\n`;
 }
 
-if (args.includes('--capture')) await capture();
-build();
+// Run as a script (not imported by the tests for runExample).
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (args.includes('--capture')) await capture();
+  else if (args.includes('--capture-examples')) {
+    // Only the examples' runs, leaving the landing page's captures as they are.
+    const tmp = mkdtempSync(join(tmpdir(), 'brokit-site-'));
+    try {
+      await captureExamples(tmp);
+      console.log(`captured ${EXAMPLES.length} examples`);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  }
+  build();
+}

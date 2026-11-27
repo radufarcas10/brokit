@@ -1,0 +1,46 @@
+{
+  "note": "The trips page, first on a laptop, then as a phone with a notch, in light and dark.",
+  "url": "/index.html",
+  "viewport": { "size": "1024x700" },
+  "ready": "document.readyState === 'complete'",
+  "steps": [
+    {
+      "expect": "getComputedStyle(document.querySelector('.trips')).gridTemplateColumns.split(' ').length",
+      "equals": 2,
+      "note": "on a laptop, two columns"
+    },
+    {
+      "emulate": { "size": "393x852", "dpr": 2, "mobile": true, "reducedMotion": "reduce" },
+      "note": "now a phone, whose user asked for less motion"
+    },
+    {
+      "expect": "getComputedStyle(document.querySelector('.trips')).gridTemplateColumns.split(' ').length",
+      "equals": 1,
+      "note": "on a phone, one column"
+    },
+    { "safeArea": [59, 0, 34, 0], "note": "the notch at the top, the home bar at the bottom" },
+    {
+      "expect": "document.querySelector('header h1').getBoundingClientRect().top",
+      "atLeast": 59,
+      "note": "the title is clear of the notch"
+    },
+    {
+      "expect": "innerHeight - document.querySelector('nav a').getBoundingClientRect().bottom",
+      "atLeast": 34,
+      "note": "the tab bar's buttons are clear of the home bar"
+    },
+    {
+      "expect": "getComputedStyle(document.querySelector('.live')).animationName",
+      "equals": "none",
+      "note": "with reduced motion, the pulsing dot holds still"
+    },
+    { "screenshot": "light", "baseline": true },
+    { "emulate": { "colorScheme": "dark" } },
+    {
+      "expect": "getComputedStyle(document.body).backgroundColor",
+      "equals": "rgb(16, 18, 23)",
+      "note": "the page follows the phone's dark mode"
+    },
+    { "screenshot": "dark", "baseline": true }
+  ]
+}

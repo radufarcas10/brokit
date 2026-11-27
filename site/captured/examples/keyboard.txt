@@ -1,0 +1,34 @@
+$ brokit check --verbose
+brokit check: 1 scenario, Chrome 158.0.8127.36, software drawing
+✓ checks/todo  30 steps, 1.0 s, 1 baseline written
+    ✓ key Tab
+    ✓ expect document.activeElement.id equals "new"
+    ✓ type "Buy milk"
+    ✓ expect app.keys equals 0
+    ✓ key Enter  160 ms
+    ✓ type "Call Ana"
+    ✓ expect app.keys equals 9
+    ✓ key Enter
+    ✓ expect app.tasks.map((t) => t.text) equals ["Buy milk","Call Ana"]
+    ✓ type "Pay rent"
+    ✓ key Mod+z
+    ✓ expect document.querySelector('#new').value equals ""
+    ✓ ime "かいもの"
+    ✓ expect [document.querySelector('#new').value, app.composing] equals ["かいもの",true]
+    ✓ type "買い物"
+    ✓ expect [document.querySelector('#new').value, app.composing] equals ["買い物",false]
+    ✓ key Enter
+    ✓ expect app.tasks.length equals 3
+    ✓ key Tab
+    ✓ key Tab
+    ✓ expect document.activeElement.matches('#list li:first-child input') truthy
+    ✓ key Space
+    ✓ expect app.tasks[0].done equals true
+    ✓ key Tab
+    ✓ key Enter
+    ✓ expect app.tasks.map((t) => t.text) equals ["Call Ana","買い物"]
+    ✓ key Mod+z
+    ✓ expect app.tasks.map((t) => t.text) equals ["Buy milk","Call Ana","買い物"]
+    ✓ expect app.tasks[0].done equals true
+    ✓ screenshot list → brokit-out/checks/todo/list.png (800×650) [baseline: new]  199 ms
+1 scenario passed in 1.0 s

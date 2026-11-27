@@ -54,9 +54,26 @@ describe('markdown (the docs pages)', () => {
     assert.doesNotMatch(r.html, /<b>/);
   });
 
+  it('a code block titled with its file', () => {
+    const r = markdown('```json checks/a.check.json\n{}\n```\n\n```html\n<a href="x">b</a>\n```\n');
+    assert.match(r.html, /<span>checks\/a\.check\.json<\/span>/);
+    assert.match(r.html, /<span>HTML<\/span>[\s\S]*<span class="k">&lt;a<\/span> <span class="n">href<\/span>=<span class="str">&quot;x&quot;<\/span>/);
+  });
+
+  it('images, only where the site can show them', () => {
+    assert.equal(inline('![a <b>](x.png)', { link: () => 'assets/x.png' }), '<img src="assets/x.png" alt="a &lt;b&gt;" loading="lazy">');
+    assert.equal(inline('![gone](x.png)', { link: () => null }), 'gone');
+  });
+
+  it('quotes, as callouts holding blocks', () => {
+    const r = markdown('> **Note:** one\n> two\n>\n> - a\n\nafter\n');
+    assert.match(r.html, /^<blockquote class="callout">\n<p><strong>Note:<\/strong> one two<\/p>\n<ul>\n<li>a<\/li>\n<\/ul>\n<\/blockquote>\n<p>after<\/p>/);
+  });
+
   it('the real files convert without leftovers', async () => {
-    const { readFileSync } = await import('node:fs');
-    for (const file of ['README.md', 'SECURITY.md', 'CHANGELOG.md', 'bench/README.md']) {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const guides = readdirSync(new URL('../site/docs/', import.meta.url)).filter((f) => f.endsWith('.md')).map((f) => `site/docs/${f}`);
+    for (const file of ['README.md', 'SECURITY.md', 'CHANGELOG.md', 'bench/README.md', ...guides]) {
       const { html } = markdown(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { link: () => '#' });
       assert.doesNotMatch(html, /```|\*\*|^\|/m, file);
       assert.doesNotMatch(html, /<p>\s*<\/p>/, file);

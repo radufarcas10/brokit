@@ -71,14 +71,17 @@ for (const button of document.querySelectorAll('.copy-button')) {
   });
 }
 
-// Docs pages: the contents list marks the section being read; on a phone it starts folded.
+// Docs pages: the list of pages and the contents are folded where they sit above the text
+// (a phone), open beside it; and so on as the window changes (a tablet turned).
+const narrow = matchMedia('(max-width: 900px)');
+for (const folding of document.querySelectorAll('.docs-menu, .toc')) {
+  folding.open = !narrow.matches;
+  narrow.addEventListener('change', () => (folding.open = !narrow.matches));
+}
+
+// The contents list marks the section being read.
 const toc = document.querySelector('.toc');
 if (toc) {
-  // Folded where the contents sit above the text (a phone), open beside it; and so on
-  // as the window changes (a tablet turned).
-  const narrow = matchMedia('(max-width: 900px)');
-  toc.open = !narrow.matches;
-  narrow.addEventListener('change', () => (toc.open = !narrow.matches));
   const links = new Map([...toc.querySelectorAll('a')].map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
   const headings = [...document.querySelectorAll('.prose h2[id], .prose h3[id]')].filter((h) => links.has(h.id));
   let current = null;

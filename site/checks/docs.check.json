@@ -1,6 +1,6 @@
 {
-  "note": "The docs page (site/dist/docs.html, from README.md): links, layout, contents, and how it looks on a laptop and a phone, light and dark. Run with: npm run site:check",
-  "url": "/docs.html",
+  "note": "A docs page (site/dist/steps.html, from site/docs/steps.md): links, layout, contents, and how it looks on a laptop and a phone, light and dark. The other pages: pages.check.mjs. Run with: npm run site:check",
+  "url": "/steps.html",
   "ready": "document.readyState === 'complete'",
   "viewport": {
     "size": "1280x800",
@@ -28,22 +28,22 @@
     },
     {
       "click": {
-        "selector": ".toc a[href=\"#checks-and-baselines\"]"
+        "selector": ".toc a[href=\"#expectations\"]"
       }
     },
     {
       "expect": "document.querySelector('.toc a.here')?.hash",
-      "equals": "#checks-and-baselines",
+      "equals": "#expectations",
       "note": "the contents mark the section jumped to"
     },
     {
-      "expect": "Math.round(document.getElementById('checks-and-baselines').getBoundingClientRect().top)",
+      "expect": "Math.round(document.getElementById('expectations').getBoundingClientRect().top)",
       "near": 80,
       "within": 2,
       "note": "the heading lands just below the bar"
     },
     {
-      "screenshot": "docs-checks",
+      "screenshot": "docs-expectations",
       "baseline": true
     },
     {
@@ -52,7 +52,7 @@
       }
     },
     {
-      "screenshot": "docs-checks-dark",
+      "screenshot": "docs-expectations-dark",
       "baseline": true
     },
     {

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="settings">
+  <h1>Settings</h1>
+  <div role="tablist" aria-label="Settings">
+    <button role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true">General</button>
+    <button role="tab" id="tab-notifications" aria-controls="panel-notifications" aria-selected="false" tabindex="-1">Notifications</button>
+    <button role="tab" id="tab-privacy" aria-controls="panel-privacy" aria-selected="false" tabindex="-1">Privacy</button>
+  </div>
+
+  <section role="tabpanel" id="panel-general" aria-labelledby="tab-general">
+    <label class="field">Name <input value="Ana Pop"></label>
+    <label class="field">Email <input type="email" value="ana@example.com"></label>
+    <label class="field">Language
+      <select><option>English</option><option>Română</option><option>Français</option></select>
+    </label>
+  </section>
+
+  <section role="tabpanel" id="panel-notifications" aria-labelledby="tab-notifications" hidden>
+    <label class="row"><span>Email digest<small>A summary of your week, on Mondays</small></span><input type="checkbox" role="switch" id="digest"></label>
+    <label class="row"><span>Mentions<small>When someone mentions you</small></span><input type="checkbox" role="switch" checked></label>
+    <label class="row"><span>Product news<small>New features, now and then</small></span><input type="checkbox" role="switch"></label>
+  </section>
+
+  <section role="tabpanel" id="panel-privacy" aria-labelledby="tab-privacy" hidden>
+    <fieldset>
+      <legend>Who can see your profile</legend>
+      <label><input type="radio" name="seen" checked> Everyone</label>
+      <label><input type="radio" name="seen"> People you follow</label>
+      <label><input type="radio" name="seen"> Only you</label>
+    </fieldset>
+    <label class="row"><span>Show when you're online<small>Others see a green dot</small></span><input type="checkbox" role="switch" checked></label>
+  </section>
+</main>
+<script src="tabs.js"></script>
+</body>
+</html>

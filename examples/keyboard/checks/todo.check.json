@@ -1,0 +1,43 @@
+{
+  "note": "The to-do list with the keyboard only: Tab, typing, an input method, Space, Enter and undo.",
+  "url": "/index.html",
+  "viewport": { "size": "640x520", "dpr": 2 },
+  "ready": "document.readyState === 'complete'",
+  "steps": [
+    { "key": "Tab", "note": "from nothing focused, Tab goes to the first field" },
+    { "expect": "document.activeElement.id", "equals": "new" },
+
+    { "type": "Buy milk", "note": "at once, as a paste: no key events" },
+    { "expect": "app.keys", "equals": 0 },
+    { "key": "Enter" },
+    { "type": "Call Ana", "perKey": true, "note": "a key press per character" },
+    { "expect": "app.keys", "equals": 9, "note": "Enter, then 8 keys" },
+    { "key": "Enter" },
+    { "expect": "app.tasks.map((t) => t.text)", "equals": ["Buy milk", "Call Ana"] },
+
+    { "type": "Pay rent" },
+    { "key": "Mod+z", "note": "Ctrl+Z, or Cmd+Z on macOS: in the field, it undoes the typing" },
+    { "expect": "document.querySelector('#new').value", "equals": "" },
+
+    { "ime": "かいもの", "note": "an input method composing, not committed yet" },
+    { "expect": "[document.querySelector('#new').value, app.composing]", "equals": ["かいもの", true] },
+    { "type": "買い物", "note": "commits the composition" },
+    { "expect": "[document.querySelector('#new').value, app.composing]", "equals": ["買い物", false] },
+    { "key": "Enter" },
+    { "expect": "app.tasks.length", "equals": 3 },
+
+    { "key": "Tab", "note": "to the Add button" },
+    { "key": "Tab", "note": "to the first task" },
+    { "expect": "document.activeElement.matches('#list li:first-child input')" },
+    { "key": "Space", "note": "ticks it off" },
+    { "expect": "app.tasks[0].done", "equals": true },
+    { "key": "Tab", "note": "to its remove button" },
+    { "key": "Enter" },
+    { "expect": "app.tasks.map((t) => t.text)", "equals": ["Call Ana", "買い物"] },
+    { "key": "Mod+z", "note": "outside the field, the list's own undo brings the task back" },
+    { "expect": "app.tasks.map((t) => t.text)", "equals": ["Buy milk", "Call Ana", "買い物"] },
+    { "expect": "app.tasks[0].done", "equals": true },
+
+    { "screenshot": "list", "selector": ".card", "baseline": true }
+  ]
+}

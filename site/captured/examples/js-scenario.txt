@@ -1,0 +1,24 @@
+$ brokit check --verbose
+brokit check: 1 scenario, Chrome 158.0.8127.36, software drawing
+✓ checks/settings  20 steps, 1.4 s, 3 baselines written
+    ✓ General: its tab is selected
+    ✓ General: only its panel shows
+    ✓ screenshot tab-general → brokit-out/checks/settings/tab-general.png (1040×763) [baseline: new]  387 ms
+    ✓ Notifications: its tab is selected
+    ✓ Notifications: only its panel shows
+    ✓ screenshot tab-notifications → brokit-out/checks/settings/tab-notifications.png (1040×655) [baseline: new]  185 ms
+    ✓ Privacy: its tab is selected
+    ✓ Privacy: only its panel shows
+    ✓ screenshot tab-privacy → brokit-out/checks/settings/tab-privacy.png (1040×660) [baseline: new]  170 ms
+    ✓ key ArrowRight
+    ✓ ArrowRight selects General
+    ✓ key ArrowLeft
+    ✓ ArrowLeft selects Privacy
+    ✓ key ArrowLeft
+    ✓ ArrowLeft selects Notifications
+    ✓ key Home
+    ✓ Home selects General
+    ✓ the email digest is still on
+    ✓ on a phone, the last tab fits in the tab bar
+    ✓ on a phone, the tabs are on one line
+1 scenario passed in 1.4 s

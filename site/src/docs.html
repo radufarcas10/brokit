@@ -14,7 +14,8 @@
 <meta property="og:site_name" content="brokit">
 <meta property="og:title" content="{{slot:title}} · brokit">
 <meta property="og:description" content="{{slot:description}}">
-<meta property="og:image" content="assets/og.png">
+<meta property="og:image" content="{{slot:base}}assets/og.png">
+{{slot:canonical}}
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
@@ -22,14 +23,18 @@
 <script src="main.js" defer></script>
 </head>
 <body class="docs-page">
-<!-- Made by site/build.mjs from {{slot:source}}: edit that file, not this page. -->
+<!-- Made by site/build.mjs from {{slot:file}}: edit that file, not this page. -->
 {{include:sections/header.html}}
 
 <div class="wrap docs">
   <aside class="docs-side">
-    <nav class="docs-pages" aria-label="Documentation">
+    <!-- Beside the text, always open; above it (a phone), folded: see main.js. -->
+    <details class="docs-menu" open>
+      <summary>Pages<span> · {{slot:name}}</span></summary>
+      <nav class="docs-pages" aria-label="Documentation">
       {{slot:pages}}
-    </nav>
+      </nav>
+    </details>
     <details class="toc" open>
       <summary>On this page</summary>
       {{slot:toc}}
@@ -37,6 +42,8 @@
   </aside>
   <main id="main" class="prose">
 {{slot:content}}
+    {{slot:edit}}
+    {{slot:pager}}
   </main>
 </div>
 

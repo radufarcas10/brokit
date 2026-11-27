@@ -1,0 +1,46 @@
+{
+  "note": "Draw two mountains and a sun on the sketch pad, then read its pixels.",
+  "url": "/index.html",
+  "viewport": { "size": "640x440" },
+  "ready": "window.sketch?.ready",
+  "steps": [
+    { "click": { "selector": "[aria-label=Green]" } },
+    {
+      "drag": { "from": { "selector": "canvas", "offset": [30, 250] }, "to": { "selector": "canvas", "offset": [450, 250] } },
+      "note": "the ground: points 30 and 450 px from the canvas's left edge, 250 px down"
+    },
+    { "click": { "selector": "[aria-label=Blue]" } },
+    { "drag": { "from": { "selector": "canvas", "offset": [60, 250] }, "to": { "selector": "canvas", "offset": [170, 100] } } },
+    { "drag": { "from": { "selector": "canvas", "offset": [170, 100] }, "to": { "selector": "canvas", "offset": [280, 250] } } },
+    { "drag": { "from": { "selector": "canvas", "offset": [230, 250] }, "to": { "selector": "canvas", "offset": [320, 150] } } },
+    { "drag": { "from": { "selector": "canvas", "offset": [320, 150] }, "to": { "selector": "canvas", "offset": [410, 250] } } },
+    { "click": { "selector": "[aria-label=Orange]" } },
+    { "click": { "selector": "[data-size='28']" }, "note": "the large brush" },
+    { "click": { "selector": "canvas", "offset": [400, 70] }, "note": "a click is a stroke of one point: a dot" },
+    { "expect": "sketch.strokes.length", "equals": 6 },
+    {
+      "expect": "[...document.querySelector('canvas').getContext('2d').getImageData(240, 250, 1, 1).data]",
+      "equals": [14, 143, 108, 255],
+      "note": "the pixel at (240, 250) is the green of the ground, #0e8f6c"
+    },
+    {
+      "expect": "[...document.querySelector('canvas').getContext('2d').getImageData(400, 70, 1, 1).data]",
+      "equals": [245, 158, 11, 255],
+      "note": "the middle of the sun is orange, #f59e0b"
+    },
+    {
+      "screenshot": "drawing",
+      "from": "document.querySelector('canvas')",
+      "baseline": true,
+      "note": "the canvas's own pixels, 480×300, without the page around it"
+    },
+    { "screenshot": "app", "baseline": true, "note": "the whole viewport, toolbar and all" },
+    { "click": { "selector": "#clear" } },
+    { "expect": "sketch.strokes.length", "equals": 0 },
+    {
+      "expect": "[...document.querySelector('canvas').getContext('2d').getImageData(240, 250, 1, 1).data]",
+      "equals": [255, 255, 255, 255],
+      "note": "blank paper again"
+    }
+  ]
+}

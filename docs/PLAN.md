@@ -133,9 +133,8 @@ And a library: `import { launch } from 'brokit'` for custom runners.
 - [x] Say plainly (README, SECURITY.md) that `*.check.mjs` files are code, run like
       tests; `--no-js` runs only JSON scenarios.
 - [x] SECURITY.md (how to report a vulnerability), CHANGELOG.md.
-- [ ] package.json: `repository`, `homepage`, `bugs`, `keywords` (once the host is
-      chosen; `repository` also makes the README's logo show on npm); remove
-      `"private": true` only when publishing.
+- [x] package.json: `repository`, `homepage`, `bugs`, `keywords` (`repository` also
+      makes the README's logo show on npm); remove `"private": true` only when publishing.
 - [ ] CI for the repository itself (tests on Linux; macOS and Windows to verify Chrome
       discovery and keyboard shortcuts there).
 - [x] Smaller site baselines (5.2 MB → 1.5 MB).
@@ -148,8 +147,12 @@ And a library: `import { launch } from 'brokit'` for custom runners.
 - [x] A page with errors never becomes a baseline, even with `--update`.
 - [x] Docs pages on the site, generated from README/SECURITY/CHANGELOG/bench README.
 - [x] Theme switch (system, light, dark) on every page.
-- [ ] Set site/site.json "repo" once hosted (the docs then link source files, and a
-      "Source" link can go in the footer); og:url and absolute og:image need the address.
+- [x] Set site/site.json "repo", "branch" and "url" (the docs link source files, a
+      GitHub link in the bar and footer, og:url and absolute og:image).
+- [x] Docs site (2026-11-27): guides in site/docs/, CLI and library references, runnable
+      examples in examples/ (captured by `npm run site:capture`, run by
+      test/examples.test.mjs), published by .github/workflows/pages.yml.
+- [ ] GitHub Pages: set Settings → Pages → Source to "GitHub Actions" (once).
 - [ ] Faster per check by doing less (measure first): a frame only when the page has
       something to draw, no font wait without web fonts, reuse a tab between checks.
 - [ ] Verify the GitHub Actions and GitLab CI recipes there.
@@ -178,5 +181,5 @@ And a library: `import { launch } from 'brokit'` for custom runners.
   `run` keeps Chrome's default.
 - Logo: "bro" + "kit" on a block, burgundy #2b1414 and white, swapped in dark (user,
   2026-10-27); the icon in the same two colors.
-- Landing page: `site/`, static, no dependencies, hosting (GitHub or GitLab Pages) not
-  decided yet.
+- Landing page and docs: `site/`, static, no dependencies, hosted on GitHub Pages
+  (https://radufarcas10.github.io/brokit/), decided 2026-11-27.

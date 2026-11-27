@@ -5,6 +5,12 @@
   "description": "Check web pages in a real Chrome: real clicks, typing and touch, expectations, screenshot baselines and pixel diffs. A CLI and Node.js library for developers, CI and AI agents, with no npm dependencies.",
   "license": "MIT OR Apache-2.0",
   "author": "Radu Farcas",
+  "homepage": "https://radufarcas10.github.io/brokit/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/radufarcas10/brokit.git"
+  },
+  "bugs": "https://github.com/radufarcas10/brokit/issues",
   "type": "module",
   "bin": {
     "brokit": "bin/brokit.mjs"

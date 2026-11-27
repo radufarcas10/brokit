@@ -1,3 +1,7 @@
 node_modules/
 brokit-out/
 site/dist/
+# The examples' baselines depend on the machine's fonts and Chrome: each reader's first
+# run writes their own. (In a real project, commit them.)
+examples/**/baselines/
+examples/**/out/

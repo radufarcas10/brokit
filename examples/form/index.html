@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign up</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="card">
+  <form id="form" novalidate>
+    <h1>Create your account</h1>
+    <p class="lead">Free for 30 days. No card needed.</p>
+    <label>Name <input id="name" autocomplete="off"></label>
+    <label>Email <input id="email" type="email" autocomplete="off"></label>
+    <p class="error" id="email-error" aria-live="polite"></p>
+    <label>Password <input id="password" type="password" autocomplete="off"></label>
+    <button id="submit">Create account</button>
+  </form>
+  <section id="welcome" hidden>
+    <div class="check" aria-hidden="true">✓</div>
+    <h2></h2>
+    <p></p>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

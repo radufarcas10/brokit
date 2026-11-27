@@ -1,0 +1,22 @@
+$ brokit check --verbose
+brokit check: 1 scenario, Chrome 158.0.8127.36, software drawing
+✓ checks/sketch  18 steps, 1.7 s, 2 baselines written
+    ✓ click [aria-label=Green]  187 ms
+    ✓ drag {"from":{"selector":"canvas","offset":[30,250]},"to":{"selector":"canvas","offset":[450,250]}}  188 ms
+    ✓ click [aria-label=Blue]
+    ✓ drag {"from":{"selector":"canvas","offset":[60,250]},"to":{"selector":"canvas","offset":[170,100]}}  167 ms
+    ✓ drag {"from":{"selector":"canvas","offset":[170,100]},"to":{"selector":"canvas","offset":[280,250]}}  166 ms
+    ✓ drag {"from":{"selector":"canvas","offset":[230,250]},"to":{"selector":"canvas","offset":[320,150]}}  167 ms
+    ✓ drag {"from":{"selector":"canvas","offset":[320,150]},"to":{"selector":"canvas","offset":[410,250]}}  167 ms
+    ✓ click [aria-label=Orange]
+    ✓ click [data-size='28']
+    ✓ click canvas +[400,70]
+    ✓ expect sketch.strokes.length equals 6
+    ✓ expect [...document.querySelector('canvas').getContext('2d').getIma… equals [14,143,108,255]
+    ✓ expect [...document.querySelector('canvas').getContext('2d').getIma… equals [245,158,11,255]
+    ✓ screenshot drawing → brokit-out/checks/sketch/drawing.png (480×300) [baseline: new]
+    ✓ screenshot app → brokit-out/checks/sketch/app.png (640×440) [baseline: new]  130 ms
+    ✓ click #clear
+    ✓ expect sketch.strokes.length equals 0
+    ✓ expect [...document.querySelector('canvas').getContext('2d').getIma… equals [255,255,255,255]
+1 scenario passed in 1.7 s

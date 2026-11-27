@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <div class="toolbar">
+    <div class="group" role="group" aria-label="Color">
+      <button class="swatch" data-color="#17191f" style="--c: #17191f" aria-label="Ink" aria-pressed="true"></button>
+      <button class="swatch" data-color="#0e8f6c" style="--c: #0e8f6c" aria-label="Green"></button>
+      <button class="swatch" data-color="#3b5bdb" style="--c: #3b5bdb" aria-label="Blue"></button>
+      <button class="swatch" data-color="#f59e0b" style="--c: #f59e0b" aria-label="Orange"></button>
+    </div>
+    <div class="group" role="group" aria-label="Brush">
+      <button class="size" data-size="4">S</button>
+      <button class="size" data-size="8" aria-pressed="true">M</button>
+      <button class="size" data-size="28">L</button>
+    </div>
+    <button id="clear">Clear</button>
+  </div>
+  <canvas width="480" height="300"></canvas>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

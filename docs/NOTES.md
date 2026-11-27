@@ -2,6 +2,33 @@
 
 Read this first. What's been done, what was learned, what's next. Newest first.
 
+## 2026-11-27: docs site with guides, references and examples; GitHub Pages
+
+- Docs pages now come from `site/docs/*.md` (getting started, steps and expectations,
+  scenarios, checks and baselines, Chrome and safety, CI and containers, command line,
+  Node.js library) plus README (the introduction), `examples/**/README.md`, SECURITY,
+  CHANGELOG and the bench README. The side bar has groups (`GROUPS` in build.mjs);
+  pages have previous/next links and "Edit this page on GitHub". README was cut to an
+  introduction and an index of these pages (its reference text moved into them, so
+  there's still one text to keep).
+- Markdown converter: images (only ones the site publishes: `site/assets/...`), quotes
+  as callouts, a fence's file name (```json checks/a.check.json) as its window's title,
+  HTML and CSS highlighting. Build directives in Markdown, as HTML comments GitHub
+  hides: `<!-- include: path -->` (a file as code), `<!-- output -->` (an example's
+  captured run).
+- Examples: `examples/<dir>/`, listed in `site/lib/examples.mjs` with the command to run
+  and the screenshots to keep. `npm run site:capture` runs each in a fresh copy (a
+  `node_modules/brokit` link to this checkout) into `site/captured/examples/` and
+  `site/assets/examples/`; `test/examples.test.mjs` runs each twice (baselines written,
+  then matched). Example baselines are git-ignored: they depend on the machine.
+- `site.json`: `repo`, `branch` (master; links had `main` hard-coded), `url` (og:url,
+  canonical, absolute og:image). GitHub link in the bar and footer.
+- `.github/workflows/pages.yml`: `npm run site` and deploy to Pages on push to master.
+  Needs Settings → Pages → Source: "GitHub Actions" once. It doesn't run the site
+  checks: their baselines are this machine's.
+- Site checks: `docs.check.json` now on steps.html; `pages.check.mjs` walks every page in
+  the side bar (links, widths, images, the side bar's mark), baselines for six.
+
 ## 2026-10-27: screenshots wait for motion; 404s can't become baselines
 
 - `Page.still()`: waits until no animation with an end runs (`document.getAnimations()`,

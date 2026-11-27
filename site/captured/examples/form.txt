@@ -1,0 +1,34 @@
+$ brokit check --verbose
+brokit check: 2 scenarios, Chrome 158.0.8127.36, software drawing
+✓ checks/signup-phone  12 steps, 1.1 s, 2 baselines written
+    ✓ expect document.documentElement.scrollWidth <= innerWidth truthy
+    ✓ tap #name  155 ms
+    ✓ type "Ana Pop"
+    ✓ tap #email
+    ✓ type "ana@example.com"
+    ✓ tap #password
+    ✓ type "correct horse battery"
+    ✓ screenshot filled → brokit-out/checks/signup-phone/filled.png (786×1704) [baseline: new]  269 ms
+    ✓ tap #submit
+    ✓ expect document.querySelector('#welcome h2').textContent equals "Welcome, Ana"
+    ✓ expect document.querySelector('#form').checkVisibility() equals false
+    ✓ screenshot welcome → brokit-out/checks/signup-phone/welcome.png (786×1704) [baseline: new]  158 ms
+✓ checks/signup  17 steps, 0.6 s, 2 baselines written
+    ✓ click #name
+    ✓ type "Ana Pop"
+    ✓ click #email
+    ✓ type "ana@example"
+    ✓ key Enter
+    ✓ expect document.querySelector('#email-error').textContent equals "Enter a valid email, like ana@example.com"
+    ✓ expect document.activeElement.id equals "email"
+    ✓ screenshot error → brokit-out/checks/signup/error.png (380×453) [baseline: new]  161 ms
+    ✓ click #email
+    ✓ type "ana@example.com"
+    ✓ click #password
+    ✓ type "correct horse battery"
+    ✓ click #submit
+    ✓ expect document.querySelector('#welcome h2').textContent equals "Welcome, Ana"
+    ✓ expect document.querySelector('#welcome p').textContent matches /^We sent a link to ana@example\.com\.$/
+    ✓ expect document.querySelector('#form').checkVisibility() equals false
+    ✓ screenshot welcome → brokit-out/checks/signup/welcome.png (800×600) [baseline: new]  128 ms
+2 scenarios passed in 1.7 s

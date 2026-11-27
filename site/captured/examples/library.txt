@@ -1,0 +1,4 @@
+$ node screenshots.mjs
+laptop 1280x800 at 1x → out/laptop.png, 1280×800, new
+tablet 820x1180 at 1x → out/tablet.png, 820×1180, new
+phone  393x852 at 2x → out/phone.png, 786×1704, new

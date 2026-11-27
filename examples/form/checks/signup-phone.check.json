@@ -1,0 +1,20 @@
+{
+  "note": "The same form on a phone: a touch screen, so taps instead of clicks.",
+  "url": "/index.html",
+  "viewport": { "size": "393x852", "dpr": 2, "mobile": true },
+  "ready": "document.readyState === 'complete'",
+  "steps": [
+    { "expect": "document.documentElement.scrollWidth <= innerWidth", "note": "nothing wider than the phone" },
+    { "tap": { "selector": "#name" } },
+    { "type": "Ana Pop" },
+    { "tap": { "selector": "#email" } },
+    { "type": "ana@example.com" },
+    { "tap": { "selector": "#password" } },
+    { "type": "correct horse battery" },
+    { "screenshot": "filled", "baseline": true },
+    { "tap": { "selector": "#submit" } },
+    { "expect": "document.querySelector('#welcome h2').textContent", "equals": "Welcome, Ana" },
+    { "expect": "document.querySelector('#form').checkVisibility()", "equals": false },
+    { "screenshot": "welcome", "baseline": true }
+  ]
+}

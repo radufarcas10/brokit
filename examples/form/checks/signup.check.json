@@ -1,0 +1,32 @@
+{
+  "note": "The sign-up form on a laptop: a wrong email first, then the right one.",
+  "url": "/index.html",
+  "viewport": { "size": "800x600" },
+  "ready": "document.readyState === 'complete'",
+  "steps": [
+    { "click": { "selector": "#name" } },
+    { "type": "Ana Pop" },
+    { "click": { "selector": "#email" } },
+    { "type": "ana@example" },
+    { "key": "Enter", "note": "Enter in a field submits the form" },
+    {
+      "expect": "document.querySelector('#email-error').textContent",
+      "equals": "Enter a valid email, like ana@example.com"
+    },
+    {
+      "expect": "document.activeElement.id",
+      "equals": "email",
+      "note": "the page puts the cursor back in the field to fix"
+    },
+    { "screenshot": "error", "selector": ".card", "baseline": true },
+    { "click": { "selector": "#email" }, "count": 3, "note": "a triple click selects all the text in the field" },
+    { "type": "ana@example.com", "note": "replaces the selection" },
+    { "click": { "selector": "#password" } },
+    { "type": "correct horse battery" },
+    { "click": { "selector": "#submit" } },
+    { "expect": "document.querySelector('#welcome h2').textContent", "equals": "Welcome, Ana" },
+    { "expect": "document.querySelector('#welcome p').textContent", "matches": "^We sent a link to ana@example\\.com\\.$" },
+    { "expect": "document.querySelector('#form').checkVisibility()", "equals": false, "note": "the form is gone, not just covered" },
+    { "screenshot": "welcome", "baseline": true }
+  ]
+}

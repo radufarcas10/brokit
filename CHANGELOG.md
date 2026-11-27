@@ -5,6 +5,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- Documentation site, published to GitHub Pages: guides (getting started, steps and
+  expectations, scenarios, checks and baselines, Chrome, CI), references for the command
+  line and the Node.js library, and runnable examples in `examples/` whose output on the
+  site comes from real runs.
+
 ## [0.1.0] - not released yet
 
 First version.

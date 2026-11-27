@@ -2,9 +2,9 @@
 //
 // Blocks: headings (with GitHub's ids, so links like #comparing-images work), paragraphs,
 // bullet and numbered lists (an item's text may continue on indented lines; lists may
-// nest), pipe tables, fenced code (highlighted; see highlightCode). Inline: `code`,
-// **bold**, *emphasis*, [links](...). Everything else is text, and all text is escaped:
-// no raw HTML passes through.
+// nest), pipe tables, fenced code (highlighted; see highlightCode), quotes (shown as
+// callouts). Inline: `code`, **bold**, *emphasis*, [links](...), ![images](...).
+// Everything else is text, and all text is escaped: no raw HTML passes through.
 //
 // markdown(text, { link }) returns { html, title, toc }. `link(href)` turns a link into
 // where it should go on the site, or null to show its text without a link.
@@ -33,14 +33,19 @@ export function inline(text, { link = (h) => h } = {}) {
 }
 
 function prose(text, link) {
-  // Links first, on the raw text (their targets mustn't be touched by the rest).
+  // Images and links first, on the raw text (their targets mustn't be touched by the rest).
   let out = '';
   let at = 0;
-  for (const m of text.matchAll(/\[([^\]]+)\]\(([^)\s]+)\)/g)) {
+  for (const m of text.matchAll(/(!?)\[([^\]]*)\]\(([^)\s]+)\)/g)) {
     out += emphasis(escape(text.slice(at, m.index)));
-    const href = link(m[2]);
-    const label = emphasis(escape(m[1]));
-    out += href === null ? label : `<a href="${escape(href)}"${/^https?:/.test(href) ? ' rel="noopener"' : ''}>${label}</a>`;
+    const href = link(m[3]);
+    if (m[1]) {
+      // An image: only one the site publishes (an image it can't show keeps its alt text).
+      out += href === null ? escape(m[2]) : `<img src="${escape(href)}" alt="${escape(m[2])}" loading="lazy">`;
+    } else {
+      const label = emphasis(escape(m[2]));
+      out += href === null ? label : `<a href="${escape(href)}"${/^https?:/.test(href) ? ' rel="noopener"' : ''}>${label}</a>`;
+    }
     at = m.index + m[0].length;
   }
   return out + emphasis(escape(text.slice(at)));
@@ -51,9 +56,11 @@ function emphasis(html) {
 }
 
 const LIST = /^(\s*)([-*]|\d+\.)\s+(.*)$/;
-const FENCE = /^```\s*([\w-]*)\s*$/;
+// A fence's language, and the file it shows, if any: ```json checks/form.check.json
+const FENCE = /^```\s*([\w-]*)(?:[ \t]+([^`\s][^`]*?))?\s*$/;
 const HEADING = /^(#{1,6})\s+(.*?)\s*#*\s*$/;
-const TABLE_RULE = /^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
+const QUOTE = /^\s{0,3}> ?/;
+const TABLE_RULE =/^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
 
 /** Cells of a table row, split on | outside code spans. */
 function cells(row) {
@@ -105,7 +112,7 @@ export function markdown(text, { link = (h) => h } = {}) {
         i++;
         while (i < lines.length && !/^```\s*$/.test(lines[i])) code.push(lines[i++]);
         i++;
-        html += codeBlock(fence[1], code.join('\n'));
+        html += codeBlock(fence[1], code.join('\n'), fence[2]);
         continue;
       }
       const heading = HEADING.exec(line);
@@ -117,6 +124,13 @@ export function markdown(text, { link = (h) => h } = {}) {
         const content = inline(heading[2], { link });
         html += level === 1 ? `<h1 id="${id}">${content}</h1>\n` : `<h${level} id="${id}">${content}<a class="anchor" href="#${id}" aria-label="Link to this section">#</a></h${level}>\n`;
         i++;
+        continue;
+      }
+      if (QUOTE.test(line)) {
+        // A quote is a callout: "> **Note:** ..." reads as a note beside the text.
+        const inner = [];
+        while (i < lines.length && QUOTE.test(lines[i])) inner.push(lines[i++].replace(QUOTE, ''));
+        html += `<blockquote class="callout">\n${blocks(inner)}</blockquote>\n`;
         continue;
       }
       if (line.trim().startsWith('|') && i + 1 < lines.length && TABLE_RULE.test(lines[i + 1])) {
@@ -171,7 +185,7 @@ export function markdown(text, { link = (h) => h } = {}) {
       }
       // A paragraph: lines until a blank one or the start of another block.
       const para = [];
-      while (i < lines.length && lines[i].trim() && !FENCE.test(lines[i]) && !HEADING.test(lines[i]) && !LIST.test(lines[i]) && !(lines[i].trim().startsWith('|') && TABLE_RULE.test(lines[i + 1] ?? ''))) {
+      while (i < lines.length && lines[i].trim() && !FENCE.test(lines[i]) && !HEADING.test(lines[i]) && !LIST.test(lines[i]) && !QUOTE.test(lines[i]) && !(lines[i].trim().startsWith('|') && TABLE_RULE.test(lines[i + 1] ?? ''))) {
         para.push(lines[i++].trim());
       }
       html += `<p>${inline(para.join(' '), { link })}</p>\n`;
@@ -195,6 +209,8 @@ const RULES = {
   dockerfile: [COMMENT_HASH, STRINGS, [/^(?:FROM|RUN|COPY|ADD|USER|WORKDIR|CMD|ENTRYPOINT|ENV|ARG|EXPOSE|LABEL)\b/m, 'k'], [/(?<=\s)--[\w-]+(?:=\S+)?/, 'k']],
   js: [[/\/\/[^\n]*|\/\*[\s\S]*?\*\//, 'c'], [/"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/, 'str'], [/\b(?:export|import|from|const|let|default|async|await|for|of|return|new|if|else|function)\b/, 'k'], [/\b\d+(?:\.\d+)?\b|\b(?:true|false|null|undefined)\b/, 'n']],
 };
+RULES.html = [[/<!--[\s\S]*?-->/, 'c'], [/<\/?[\w-]+|\/?>/, 'k'], [/"[^"\n]*"|'[^'\n]*'/, 'str'], [/(?<=\s)[\w:-]+(?==)/, 'n']];
+RULES.css = [[/\/\*[\s\S]*?\*\//, 'c'], [/"[^"\n]*"|'[^'\n]*'/, 'str'], [/(?<=^|[;{]\s*)--?[\w-]+(?=\s*:)|(?<=^|[;{]\s*)[a-z-]+(?=\s*:)/m, 'k'], [/#[0-9a-fA-F]{3,8}\b|-?\b\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|s|ms|deg|fr)?\b/, 'n'], [/@[\w-]+/, 'k']];
 RULES.shell = RULES.bash = RULES.sh;
 RULES.yml = RULES.yaml;
 RULES.javascript = RULES.mjs = RULES.js;
@@ -212,14 +228,14 @@ function highlightWith(rules, text) {
   return out + escape(text.slice(at));
 }
 
-/** A code block as the site shows it: a terminal window with a copy button. */
-export function codeBlock(lang, code) {
+/** A code block as the site shows it: a terminal window (titled with its file, if it has one) with a copy button. */
+export function codeBlock(lang, code, file) {
   const language = lang.toLowerCase();
   let body;
   if (language === 'json') body = highlightJson(code);
   else if (RULES[language]) body = highlightWith(RULES[language], code);
   else if (/^\$ /.test(code)) body = highlightOutput(code); // a terminal: a command and what it printed
   else body = escape(code);
-  const label = { sh: 'shell', js: 'JavaScript', json: 'JSON', yaml: 'YAML', toml: 'TOML', dockerfile: 'Dockerfile' }[language] ?? (/^\$ /.test(code) ? 'terminal' : 'text');
+  const label = file ?? { sh: 'shell', js: 'JavaScript', json: 'JSON', yaml: 'YAML', toml: 'TOML', dockerfile: 'Dockerfile', html: 'HTML', css: 'CSS' }[language] ?? (/^\$ /.test(code) ? 'terminal' : 'text');
   return `<figure class="terminal code-block"><div class="terminal-bar"><i></i><i></i><i></i><span>${escape(label)}</span><button type="button" class="copy-button copy-code">Copy</button></div><pre><code>${body}</code></pre></figure>\n`;
 }
