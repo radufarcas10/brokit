@@ -14,7 +14,8 @@ node screenshots.mjs
 <!-- output -->
 
 Inside this repository, `import ... from 'brokit'` finds brokit itself. In your own
-project, install it first: `npm install --save-dev brokit`.
+project, install it first: `npm install --save-dev brokit` (until brokit is on npm,
+`npm install --save-dev github:radufarcas10/brokit`).
 
 The first run writes `out/laptop.png`, `out/tablet.png` and `out/phone.png`. Each
 run after it compares the new screenshots with them, says which changed, and exits 1 if

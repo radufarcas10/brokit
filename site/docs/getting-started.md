@@ -20,8 +20,41 @@ In your project:
 npm install --save-dev brokit
 ```
 
-brokit has no npm dependencies, so this adds one package and nothing else. Then ask it
-whether everything it needs is there:
+brokit has no npm dependencies, so this adds one package and nothing else.
+
+### Before brokit is on npm
+
+brokit isn't published on npm yet. Until it is, install it one of these ways; everything
+after that (`npx brokit ...`, `import ... from 'brokit'`) works the same.
+
+**From GitHub**, into your project. No clone needed; run it again to update:
+
+```sh
+npm install --save-dev github:radufarcas10/brokit
+```
+
+**From a clone**, into your project. npm links the folder rather than copying it, so a
+`git pull` in the clone updates every project that uses it:
+
+```sh
+git clone https://github.com/radufarcas10/brokit.git
+cd my-project
+npm install --save-dev ../brokit       # the path to your clone
+```
+
+**From a clone, as a command** you can run anywhere, without `npx`:
+
+```sh
+cd brokit
+npm link                                # puts brokit on your PATH
+brokit doctor
+```
+
+To try it without installing anything: `npx github:radufarcas10/brokit run index.html`.
+
+### Check your setup
+
+Ask brokit whether everything it needs is there:
 
 ```sh
 npx brokit doctor
@@ -32,8 +65,7 @@ screenshot and WebGL, and looks for fonts. When something is missing, it says wh
 on your system to fix it. It exits 0 when brokit can work.
 
 > **Note:** the commands below write `brokit`; in a project where you installed it with
-> npm, that's `npx brokit`. You can also try brokit without installing it:
-> `npx brokit run index.html`.
+> npm, that's `npx brokit`. After `npm link`, `brokit` works as written.
 
 ## 2. Open a page
 

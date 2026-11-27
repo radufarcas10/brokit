@@ -32,7 +32,25 @@ npm install --save-dev brokit
 npx brokit doctor          # checks that everything brokit needs is here, says what to fix
 ```
 
-Or try it without installing: `npx brokit run index.html`.
+brokit isn't on npm yet. Until it is, install it from GitHub or from a clone instead;
+everything after that (`npx brokit ...`, `import ... from 'brokit'`) works the same.
+
+```sh
+# From GitHub, into your project (no clone needed). Run it again to update.
+npm install --save-dev github:radufarcas10/brokit
+
+# From a clone, into your project: npm links the folder, so `git pull` there updates it.
+git clone https://github.com/radufarcas10/brokit.git
+cd my-project
+npm install --save-dev ../brokit       # the path to your clone
+
+# From a clone, as a `brokit` command anywhere (no npx needed).
+cd brokit
+npm link
+brokit doctor
+```
+
+Or try it without installing: `npx github:radufarcas10/brokit run index.html`.
 
 ## Quick start
 

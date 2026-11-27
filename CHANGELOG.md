@@ -9,6 +9,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
   expectations, scenarios, checks and baselines, Chrome, CI), references for the command
   line and the Node.js library, and runnable examples in `examples/` whose output on the
   site comes from real runs.
+- How to install brokit before it's on npm: from GitHub
+  (`npm install --save-dev github:radufarcas10/brokit`), from a clone, or with `npm link`.
 
 ## [0.1.0] - not released yet
 

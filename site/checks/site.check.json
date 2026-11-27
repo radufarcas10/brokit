@@ -58,7 +58,9 @@
     {
       "screenshot": "phone-light",
       "fullPage": true,
-      "baseline": true
+      "baseline": true,
+      "tolerance": { ">2": 10 },
+      "note": "a stray pixel may differ: the edge of the logo's check is anti-aliased one of two ways from run to run (one pixel, off by up to 59); any real change differs by thousands"
     },
     {
       "emulate": {
